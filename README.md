@@ -7,7 +7,7 @@ A demonstration of how to bridge CARIN Digital Insurance Card (DIC) Coverage res
 ```mermaid
 graph LR
     subgraph "Health Plan"
-        DIC["CARIN DIC<br/>Coverage Resource<br/>with Pharmacy IDs:<br/>RxBIN, RxPCN<br/>RxGroup, RxID"]
+        DIC["CARIN DIC<br/>Coverage Resource<br/>with Pharmacy IDs<br/>RxBIN, RxPCN<br/>RxGroup, RxID"]
     end
     
     subgraph "CARIN Blue Button API"
