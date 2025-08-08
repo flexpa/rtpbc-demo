@@ -2,6 +2,44 @@
 
 A demonstration of how to bridge CARIN Digital Insurance Card (DIC) Coverage resources with Real-Time Pharmacy Benefit Check (RTPBC) requirements, enabling real-world adoption of pharmacy benefit checking at the point of prescribing.
 
+## 🔗 Coverage Resource Relationships
+
+```mermaid
+graph TB
+    subgraph "CARIN Blue Button API (Extended)"
+        CBB["CARIN Blue Button Coverage<br/>(Medical Claims Focus)"]
+        DIC["+ CARIN Digital Insurance Card<br/>Coverage Extensions<br/>(Pharmacy Identifiers)"]
+        CBB --> DIC
+    end
+    
+    subgraph "Pharmacy Benefit Check"
+        RTPBC["RTPBC Coverage Resource<br/>(Requires Pharmacy IDs)"]
+    end
+    
+    subgraph "Key Pharmacy Identifiers"
+        RXBIN["RxBIN<br/>(Bank ID Number)"]
+        RXPCN["RxPCN<br/>(Processor Control)"]
+        RXGROUP["RxGroup<br/>(Benefit Design)"]
+        RXID["RxID<br/>(Member ID)"]
+    end
+    
+    DIC --> |"Maps pharmacy identifiers"| RTPBC
+    RXBIN --> DIC
+    RXPCN --> DIC
+    RXGROUP --> DIC
+    RXID --> DIC
+    
+    style CBB fill:#e1f5fe
+    style DIC fill:#81c784
+    style RTPBC fill:#ffb74d
+    style RXBIN fill:#fff9c4
+    style RXPCN fill:#fff9c4
+    style RXGROUP fill:#fff9c4
+    style RXID fill:#fff9c4
+```
+
+This implementation demonstrates how extending the CARIN Blue Button API with CARIN Digital Insurance Card pharmacy identifiers enables Real-Time Pharmacy Benefit Check workflows, helping **patients** get real-time benefits information about their prescriptions.
+
 ## 🎯 The Interoperability Challenge
 
 This reference implementation addresses a critical gap preventing widespread adoption of real-time pharmacy benefit checking in the United States healthcare system.
@@ -53,7 +91,7 @@ Many payers are already implementing or planning to implement digital insurance 
 ### Why This Matters
 
 - **For Patients**: Medication costs become transparent at the point of care, reducing abandonment and improving adherence
-- **For Providers**: Real-time benefit information enables informed prescribing decisions during the visit
+- **For Providers**: Enables informed prescribing decisions during the visit by helping patients get real-time benefit information
 - **For Payers**: Existing digital insurance card implementations can enable RTPBC without major rework
 - **For the Ecosystem**: Demonstrates how FHIR IGs can work together to solve real-world problems
 
