@@ -94,9 +94,10 @@ h3 a::after {
 
 .step-indicator {
     display: flex;
-    justify-content: space-between;
-    max-width: 800px;
+    justify-content: space-around;
+    max-width: 900px;
     margin: 0 auto;
+    gap: 20px;
 }
 
 .step {
@@ -105,7 +106,9 @@ h3 a::after {
     align-items: center;
     opacity: 0.3;
     transition: opacity 0.3s;
+    padding: 0 10px;
 }
+
 
 .step.active {
     opacity: 1;

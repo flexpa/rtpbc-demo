@@ -144,9 +144,12 @@ async function handleCallback(code = null, state = null) {
         }
         
         updateStep(1, 'completed');
-        updateStep(2, 'active');
         
         addStatus('Authorization code received', 'success');
+        
+        // Delay before step 2
+        await new Promise(resolve => setTimeout(resolve, 1500));
+        updateStep(2, 'active');
         
         // Exchange code for token
         await exchangeToken(code);
@@ -188,6 +191,9 @@ async function exchangeToken(code) {
             addStatus('Access token received', 'success');
             addStatus(`Patient ID: ${patientId}`, 'info');
             updateStep(2, 'completed');
+            
+            // Delay before step 3
+            await new Promise(resolve => setTimeout(resolve, 1500));
             
             // Automatically fetch coverage
             await fetchCoverage();
@@ -314,9 +320,6 @@ function transformToRTPBC(dicCoverage) {
     addStatus('Transformation completed successfully', 'success');
     updateStep(4, 'completed');
     
-    // Show step 5
-    document.getElementById('step-5').style.display = 'block';
-    
     // Simulate RTPBC request submission after a short delay
     setTimeout(() => {
         updateStep(5, 'active');
@@ -333,7 +336,10 @@ function transformToRTPBC(dicCoverage) {
 }
 
 // Display coverage resources
-function displayCoverage(dicCoverage) {
+async function displayCoverage(dicCoverage) {
+    // Delay before step 4
+    await new Promise(resolve => setTimeout(resolve, 1500));
+    
     // Transform to RTPBC
     const rtpbcCoverage = transformToRTPBC(dicCoverage);
     
