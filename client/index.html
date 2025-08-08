@@ -58,8 +58,123 @@
         </section>
 
         <section class="status-panel">
-            <h3>Status</h3>
+            <h3>Status Log</h3>
             <div id="status-messages"></div>
+        </section>
+
+        <section class="debug-panel">
+            <h3>Step Details</h3>
+            <div class="debug-cards">
+                <div class="debug-card" id="debug-step-1">
+                    <h4>🚀 SMART on FHIR Launch</h4>
+                    <div class="debug-content">
+                        <div class="debug-item">
+                            <span class="debug-label">Authorization Endpoint:</span>
+                            <span class="debug-value" id="auth-endpoint">-</span>
+                        </div>
+                        <div class="debug-item">
+                            <span class="debug-label">Client ID:</span>
+                            <span class="debug-value">rtpbc-demo-client</span>
+                        </div>
+                        <div class="debug-item">
+                            <span class="debug-label">Requested Scopes:</span>
+                            <span class="debug-value">patient/*.read launch/patient</span>
+                        </div>
+                        <div class="debug-item">
+                            <span class="debug-label">State Parameter:</span>
+                            <span class="debug-value" id="state-param">-</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="debug-card" id="debug-step-2">
+                    <h4>🔐 OAuth Token Exchange</h4>
+                    <div class="debug-content">
+                        <div class="debug-item">
+                            <span class="debug-label">Token Endpoint:</span>
+                            <span class="debug-value" id="token-endpoint">-</span>
+                        </div>
+                        <div class="debug-item">
+                            <span class="debug-label">Authorization Code:</span>
+                            <span class="debug-value" id="auth-code">-</span>
+                        </div>
+                        <div class="debug-item">
+                            <span class="debug-label">Access Token:</span>
+                            <span class="debug-value" id="access-token">-</span>
+                        </div>
+                        <div class="debug-item">
+                            <span class="debug-label">Patient Context:</span>
+                            <span class="debug-value" id="patient-context">-</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="debug-card" id="debug-step-3">
+                    <h4>📋 CARIN DIC Coverage Retrieval</h4>
+                    <div class="debug-content">
+                        <div class="debug-item">
+                            <span class="debug-label">FHIR Endpoint:</span>
+                            <span class="debug-value" id="fhir-endpoint">-</span>
+                        </div>
+                        <div class="debug-item">
+                            <span class="debug-label">Coverage Profile:</span>
+                            <span class="debug-value">C4DIC-Coverage</span>
+                        </div>
+                        <div class="debug-item">
+                            <span class="debug-label">Response Status:</span>
+                            <span class="debug-value" id="response-status">-</span>
+                        </div>
+                        <div class="debug-item">
+                            <span class="debug-label">Resource ID:</span>
+                            <span class="debug-value" id="resource-id">-</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="debug-card" id="debug-step-4">
+                    <h4>🔄 RTPBC Transformation</h4>
+                    <div class="debug-content">
+                        <div class="debug-item">
+                            <span class="debug-label">RxBIN Extracted:</span>
+                            <span class="debug-value" id="rxbin-value">-</span>
+                        </div>
+                        <div class="debug-item">
+                            <span class="debug-label">RxPCN Extracted:</span>
+                            <span class="debug-value" id="rxpcn-value">-</span>
+                        </div>
+                        <div class="debug-item">
+                            <span class="debug-label">RxGroup Extracted:</span>
+                            <span class="debug-value" id="rxgroup-value">-</span>
+                        </div>
+                        <div class="debug-item">
+                            <span class="debug-label">RxID Extracted:</span>
+                            <span class="debug-value" id="rxid-value">-</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="debug-card" id="debug-step-5">
+                    <h4>📤 RTPBC Request Submission</h4>
+                    <div class="debug-content">
+                        <div class="debug-item">
+                            <span class="debug-label">PBM Endpoint:</span>
+                            <span class="debug-value">https://pbm.example.com/rtpbc (simulated)</span>
+                        </div>
+                        <div class="debug-item">
+                            <span class="debug-label">Request Method:</span>
+                            <span class="debug-value">POST</span>
+                        </div>
+                        <div class="debug-item">
+                            <span class="debug-label">Content Type:</span>
+                            <span class="debug-value">application/fhir+json</span>
+                        </div>
+                        <div class="debug-item">
+                            <span class="debug-label">Response Time:</span>
+                            <span class="debug-value" id="response-time">-</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </section>
 
         <section class="data-display" style="display: none;">

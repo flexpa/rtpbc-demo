@@ -189,6 +189,11 @@ h3 a::after {
 #status-messages {
     max-height: 200px;
     overflow-y: auto;
+    border: 1px solid #e0e0e0;
+    border-radius: 4px;
+    padding: 10px;
+    font-family: 'Consolas', 'Monaco', monospace;
+    font-size: 0.9em;
 }
 
 .status-message {
@@ -211,6 +216,88 @@ h3 a::after {
 .status-error {
     background: #ffebee;
     color: #c62828;
+}
+
+.debug-panel {
+    background: white;
+    padding: 20px;
+    border-radius: 8px;
+    margin-bottom: 30px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.debug-cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+    gap: 20px;
+    margin-top: 20px;
+}
+
+.debug-card {
+    background: #f8f9fa;
+    border: 2px solid #e9ecef;
+    border-radius: 8px;
+    padding: 20px;
+    transition: all 0.3s ease;
+    opacity: 0.5;
+}
+
+.debug-card.active {
+    opacity: 1;
+    border-color: #3498db;
+    background: #fff;
+    box-shadow: 0 4px 12px rgba(52, 152, 219, 0.15);
+}
+
+.debug-card.completed {
+    opacity: 1;
+    border-color: #27ae60;
+    background: #f8fffe;
+}
+
+.debug-card h4 {
+    margin: 0 0 15px 0;
+    color: #2c3e50;
+    font-size: 1.1em;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.debug-content {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.debug-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px 12px;
+    background: white;
+    border-radius: 4px;
+    border: 1px solid #e0e0e0;
+}
+
+.debug-label {
+    font-weight: 600;
+    color: #5a6c7d;
+    font-size: 0.85em;
+}
+
+.debug-value {
+    font-family: 'Consolas', 'Monaco', monospace;
+    color: #2c3e50;
+    font-size: 0.85em;
+    word-break: break-all;
+    text-align: right;
+    max-width: 60%;
+}
+
+.debug-value.highlight {
+    color: #3498db;
+    font-weight: 600;
 }
 
 .data-display {

@@ -31,12 +31,19 @@ function closeAuthModal() {
 // Update step indicator
 function updateStep(stepNumber, status) {
     const step = document.getElementById(`step-${stepNumber}`);
+    const debugCard = document.getElementById(`debug-step-${stepNumber}`);
+    
     if (status === 'active') {
-        // Remove active from all steps
+        // Remove active from all steps and debug cards
         document.querySelectorAll('.step').forEach(s => s.classList.remove('active'));
+        document.querySelectorAll('.debug-card').forEach(c => c.classList.remove('active'));
+        
         step.classList.add('active');
+        debugCard.classList.add('active');
     } else if (status === 'completed') {
         step.classList.add('completed');
+        debugCard.classList.add('completed');
+        debugCard.classList.remove('active');
     }
 }
 
@@ -52,9 +59,16 @@ async function startSmartLaunch() {
         
         addStatus('SMART configuration retrieved', 'success');
         
+        // Update debug info
+        document.getElementById('auth-endpoint').textContent = config.authorization_endpoint;
+        document.getElementById('token-endpoint').textContent = config.token_endpoint;
+        
         // Generate state for CSRF protection
         const state = Math.random().toString(36).substring(7);
         sessionStorage.setItem('smart_state', state);
+        
+        // Update state in debug
+        document.getElementById('state-param').textContent = state;
         
         // Build authorization URL
         const authParams = new URLSearchParams({
@@ -147,6 +161,9 @@ async function handleCallback(code = null, state = null) {
         
         addStatus('Authorization code received', 'success');
         
+        // Update debug info
+        document.getElementById('auth-code').textContent = code.substring(0, 10) + '...';
+        
         // Delay before step 2
         await new Promise(resolve => setTimeout(resolve, 1500));
         updateStep(2, 'active');
@@ -190,6 +207,12 @@ async function exchangeToken(code) {
             
             addStatus('Access token received', 'success');
             addStatus(`Patient ID: ${patientId}`, 'info');
+            
+            // Update debug info
+            document.getElementById('access-token').textContent = 
+                accessToken.substring(0, 20) + '...' + accessToken.substring(accessToken.length - 10);
+            document.getElementById('patient-context').textContent = patientId;
+            
             updateStep(2, 'completed');
             
             // Delay before step 3
@@ -216,16 +239,25 @@ async function fetchCoverage() {
         
         const coverageUrl = `${FHIR_BASE_URL}/Coverage?patient=Patient/${patientId}&_profile=http://hl7.org/fhir/us/insurance-card/StructureDefinition/C4DIC-Coverage`;
         
+        // Update debug info
+        document.getElementById('fhir-endpoint').textContent = coverageUrl;
+        
         const response = await fetch(coverageUrl, {
             headers: {
                 'Authorization': `Bearer ${accessToken}`
             }
         });
         
+        // Update response status
+        document.getElementById('response-status').textContent = `${response.status} ${response.statusText}`;
+        
         const bundle = await response.json();
         
         if (bundle.entry && bundle.entry.length > 0) {
             const dicCoverage = bundle.entry[0].resource;
+            
+            // Update debug info
+            document.getElementById('resource-id').textContent = dicCoverage.id;
             
             addStatus('CARIN DIC Coverage retrieved successfully', 'success');
             updateStep(3, 'completed');
@@ -254,6 +286,23 @@ function transformToRTPBC(dicCoverage) {
         const code = cls.type.coding[0].code;
         classValues[code] = cls.value;
     });
+    
+    // Update debug info with extracted values
+    const rxbinEl = document.getElementById('rxbin-value');
+    const rxpcnEl = document.getElementById('rxpcn-value');
+    const rxgroupEl = document.getElementById('rxgroup-value');
+    const rxidEl = document.getElementById('rxid-value');
+    
+    rxbinEl.textContent = classValues.rxbin || 'Not found';
+    rxpcnEl.textContent = classValues.rxpcn || 'Not found';
+    rxgroupEl.textContent = classValues.rxgroup || 'Not found';
+    rxidEl.textContent = classValues.rxid || 'Not found';
+    
+    // Add highlight class for found values
+    if (classValues.rxbin) rxbinEl.classList.add('highlight');
+    if (classValues.rxpcn) rxpcnEl.classList.add('highlight');
+    if (classValues.rxgroup) rxgroupEl.classList.add('highlight');
+    if (classValues.rxid) rxidEl.classList.add('highlight');
     
     // Build RTPBC Coverage
     const rtpbcCoverage = {
@@ -325,7 +374,12 @@ function transformToRTPBC(dicCoverage) {
         updateStep(5, 'active');
         addStatus('Submitting RTPBC request to PBM...', 'info');
         
+        const startTime = Date.now();
+        
         setTimeout(() => {
+            const responseTime = Date.now() - startTime;
+            document.getElementById('response-time').textContent = `${responseTime}ms`;
+            
             addStatus('RTPBC request submitted successfully (simulated)', 'success');
             addStatus('Ready to receive real-time benefit information', 'success');
             updateStep(5, 'completed');
@@ -410,6 +464,26 @@ function resetDemo() {
     // Reset UI
     document.querySelectorAll('.step').forEach(s => {
         s.classList.remove('active', 'completed');
+    });
+    
+    // Reset debug cards
+    document.querySelectorAll('.debug-card').forEach(c => {
+        c.classList.remove('active', 'completed');
+    });
+    
+    // Reset debug values
+    const debugValues = [
+        'auth-endpoint', 'state-param', 'token-endpoint', 'auth-code', 
+        'access-token', 'patient-context', 'fhir-endpoint', 'response-status',
+        'resource-id', 'rxbin-value', 'rxpcn-value', 'rxgroup-value', 
+        'rxid-value', 'response-time'
+    ];
+    
+    debugValues.forEach(id => {
+        const element = document.getElementById(id);
+        if (element) {
+            element.textContent = '-';
+        }
     });
     
     statusMessages.innerHTML = '';
