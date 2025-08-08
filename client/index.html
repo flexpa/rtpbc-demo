@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RTPBC Reference Implementation Demo</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Real-Time Pharmacy Benefit Check (RTPBC)</h1>
+            <h2>CARIN Digital Insurance Card → RTPBC Coverage Transformation Demo</h2>
+        </header>
+
+        <section class="intro">
+            <h3>Problem Statement</h3>
+            <p>The Real-Time Pharmacy Benefit Check (RTPBC) Implementation Guide enables healthcare providers to check medication coverage and costs at the point of prescribing. However, a significant barrier to adoption is that RTPBC requires specific pharmacy benefit identifiers in the Coverage resource:</p>
+            <ul style="margin: 10px 0; padding-left: 30px;">
+                <li><strong>rxid</strong> - Pharmacy Benefit Member ID</li>
+                <li><strong>rxgroup</strong> - Pharmacy Benefit Group ID</li>
+                <li><strong>rxbin</strong> - Bank Identification Number (BIN/IIN)</li>
+                <li><strong>rxpcn</strong> - Processor Control Number</li>
+            </ul>
+            <p>These elements are critical for routing pharmacy claims but aren't profiled in the standard CARIN Blue Button (BB) Coverage resources that most payers have already implemented. This creates a gap where existing FHIR implementations can't support RTPBC operations.</p>
+            <p><strong>The Solution:</strong> The CARIN Digital Insurance Card (DIC) profile includes all these pharmacy benefit elements. This demo shows how to leverage existing DIC implementations to enable RTPBC, bridging the gap between what's available today and what RTPBC needs.</p>
+        </section>
+
+        <section class="demo-flow">
+            <h3>Demo Flow</h3>
+            <div class="step-indicator">
+                <div class="step" id="step-1">
+                    <span class="step-number">1</span>
+                    <span class="step-label">SMART Launch</span>
+                </div>
+                <div class="step" id="step-2">
+                    <span class="step-number">2</span>
+                    <span class="step-label">Get Token</span>
+                </div>
+                <div class="step" id="step-3">
+                    <span class="step-number">3</span>
+                    <span class="step-label">Fetch Coverage</span>
+                </div>
+                <div class="step" id="step-4">
+                    <span class="step-number">4</span>
+                    <span class="step-label">Transform</span>
+                </div>
+            </div>
+        </section>
+
+        <section class="controls">
+            <button id="start-btn" class="primary-btn">Start SMART Launch</button>
+            <button id="reset-btn" class="secondary-btn" style="display: none;">Reset Demo</button>
+        </section>
+
+        <section class="status-panel">
+            <h3>Status</h3>
+            <div id="status-messages"></div>
+        </section>
+
+        <section class="data-display" style="display: none;">
+            <div class="data-panel">
+                <h3>
+                    <a href="https://hl7.org/fhir/us/insurance-card/StructureDefinition-C4DIC-Coverage.html" target="_blank" rel="noopener">
+                        CARIN Digital Insurance Card Coverage
+                    </a>
+                </h3>
+                <pre id="dic-coverage" class="json-display"></pre>
+            </div>
+            
+            <div class="transformation-arrow">
+                <svg width="60" height="40" viewBox="0 0 60 40">
+                    <path d="M 10 20 L 40 20" stroke="#3498db" stroke-width="3" fill="none"/>
+                    <path d="M 40 20 L 35 15 M 40 20 L 35 25" stroke="#3498db" stroke-width="3" fill="none"/>
+                </svg>
+                <span>Transform</span>
+            </div>
+            
+            <div class="data-panel">
+                <h3>
+                    <a href="https://hl7.org/fhir/us/carin-rtpbc/StructureDefinition-rtpbc-coverage.html" target="_blank" rel="noopener">
+                        RTPBC Coverage Resource
+                    </a>
+                </h3>
+                <pre id="rtpbc-coverage" class="json-display"></pre>
+            </div>
+        </section>
+
+        <section class="mapping-details" style="display: none;">
+            <h3>Field Mapping Details</h3>
+            <table class="mapping-table">
+                <thead>
+                    <tr>
+                        <th>CARIN DIC Field</th>
+                        <th>Value</th>
+                        <th>RTPBC Field</th>
+                    </tr>
+                </thead>
+                <tbody id="mapping-tbody"></tbody>
+            </table>
+        </section>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>

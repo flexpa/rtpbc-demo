@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Acme Health - Sign In</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #f5f5f5;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+        }
+        
+        .auth-container {
+            background: white;
+            padding: 40px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            width: 100%;
+            max-width: 400px;
+        }
+        
+        .logo {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        
+        .logo h1 {
+            color: #2c3e50;
+            font-size: 24px;
+        }
+        
+        .logo .subtitle {
+            color: #7f8c8d;
+            font-size: 14px;
+            margin-top: 5px;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 5px;
+            color: #555;
+            font-size: 14px;
+        }
+        
+        input {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 16px;
+        }
+        
+        input:focus {
+            outline: none;
+            border-color: #3498db;
+        }
+        
+        .app-info {
+            background: #e3f2fd;
+            padding: 15px;
+            border-radius: 4px;
+            margin-bottom: 20px;
+            font-size: 14px;
+            color: #1976d2;
+        }
+        
+        .app-info strong {
+            display: block;
+            margin-bottom: 5px;
+        }
+        
+        .btn-primary {
+            width: 100%;
+            padding: 12px;
+            background: #3498db;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+        
+        .btn-primary:hover {
+            background: #2980b9;
+        }
+        
+        .demo-note {
+            text-align: center;
+            margin-top: 20px;
+            font-size: 12px;
+            color: #999;
+        }
+    </style>
+</head>
+<body>
+    <div class="auth-container">
+        <div class="logo">
+            <h1>🏥 Acme Health</h1>
+            <div class="subtitle">Secure Sign In</div>
+        </div>
+        
+        <div class="app-info">
+            <strong>RTPBC Demo App is requesting access to:</strong>
+            • Your patient demographics<br>
+            • Your insurance coverage information
+        </div>
+        
+        <form id="authForm">
+            <div class="form-group">
+                <label for="username">Username</label>
+                <input type="text" id="username" name="username" value="testuser" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="password">Password</label>
+                <input type="password" id="password" name="password" value="password" required>
+            </div>
+            
+            <button type="submit" class="btn-primary">Sign In & Authorize</button>
+        </form>
+        
+        <div class="demo-note">
+            Demo Mode: Click "Sign In" to authorize the app
+        </div>
+    </div>
+    
+    <script>
+        document.getElementById('authForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            // Get the original query parameters
+            const urlParams = new URLSearchParams(window.location.search);
+            const redirectUri = urlParams.get('redirect_uri');
+            const state = urlParams.get('state');
+            const clientId = urlParams.get('client_id');
+            const scope = urlParams.get('scope');
+            
+            // Simulate authentication delay
+            document.querySelector('.btn-primary').textContent = 'Authorizing...';
+            document.querySelector('.btn-primary').disabled = true;
+            
+            setTimeout(async () => {
+                // Generate auth code
+                const code = 'mock-auth-code-' + Date.now();
+                
+                // Store auth info on server via a simple POST
+                await fetch('/auth/store-session', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        code: code,
+                        client_id: clientId,
+                        scope: scope,
+                        patient_id: 'example-patient-123'
+                    })
+                });
+                
+                // Check if we're in a popup window
+                if (window.opener) {
+                    // Send message to opener window
+                    window.opener.postMessage({
+                        type: 'auth-complete',
+                        code: code,
+                        state: state
+                    }, 'http://localhost:3000');
+                    
+                    // Show success message before closing
+                    document.querySelector('.auth-container').innerHTML = `
+                        <div style="text-align: center; padding: 40px;">
+                            <div style="font-size: 48px; color: #27ae60; margin-bottom: 20px;">✓</div>
+                            <h2 style="color: #27ae60;">Authorization Successful!</h2>
+                            <p style="color: #666; margin-top: 10px;">You can close this window.</p>
+                        </div>
+                    `;
+                } else {
+                    // Fallback to redirect if not in popup
+                    const returnUrl = new URL(redirectUri);
+                    returnUrl.searchParams.set('code', code);
+                    returnUrl.searchParams.set('state', state);
+                    window.location.href = returnUrl.toString();
+                }
+            }, 1000);
+        });
+    </script>
+</body>
+</html>
