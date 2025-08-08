@@ -314,6 +314,21 @@ function transformToRTPBC(dicCoverage) {
     addStatus('Transformation completed successfully', 'success');
     updateStep(4, 'completed');
     
+    // Show step 5
+    document.getElementById('step-5').style.display = 'block';
+    
+    // Simulate RTPBC request submission after a short delay
+    setTimeout(() => {
+        updateStep(5, 'active');
+        addStatus('Submitting RTPBC request to PBM...', 'info');
+        
+        setTimeout(() => {
+            addStatus('RTPBC request submitted successfully (simulated)', 'success');
+            addStatus('Ready to receive real-time benefit information', 'success');
+            updateStep(5, 'completed');
+        }, 1500);
+    }, 1000);
+    
     return rtpbcCoverage;
 }
 
