@@ -5,40 +5,34 @@ A demonstration of how to bridge CARIN Digital Insurance Card (DIC) Coverage res
 ## 🔗 Coverage Resource Relationships
 
 ```mermaid
-graph TB
-    subgraph "CARIN Blue Button API (Extended)"
-        CBB["CARIN Blue Button Coverage<br/>(Medical Claims Focus)"]
-        DIC["+ CARIN Digital Insurance Card<br/>Coverage Extensions<br/>(Pharmacy Identifiers)"]
-        CBB --> DIC
+graph LR
+    subgraph "Health Plan"
+        DIC["CARIN DIC<br/>Coverage Resource<br/>with Pharmacy IDs:<br/>RxBIN, RxPCN<br/>RxGroup, RxID"]
     end
     
-    subgraph "Pharmacy Benefit Check"
-        RTPBC["RTPBC Coverage Resource<br/>(Requires Pharmacy IDs)"]
+    subgraph "CARIN Blue Button API"
+        CBB["Coverage Endpoint<br/>/Coverage/{id}<br/><br/>Returns DIC-profiled<br/>Coverage Resource"]
     end
     
-    subgraph "Key Pharmacy Identifiers"
-        RXBIN["RxBIN<br/>(Bank ID Number)"]
-        RXPCN["RxPCN<br/>(Processor Control)"]
-        RXGROUP["RxGroup<br/>(Benefit Design)"]
-        RXID["RxID<br/>(Member ID)"]
+    subgraph "Client Application"
+        CLIENT["1. Retrieve Coverage<br/>from CARIN BB API"]
+        TRANSFORM["2. Extract Pharmacy IDs<br/>from DIC Coverage"]
+        RTPBC["3. Use with RTPBC<br/>for benefit checks"]
     end
     
-    DIC --> |"Maps pharmacy identifiers"| RTPBC
-    RXBIN --> DIC
-    RXPCN --> DIC
-    RXGROUP --> DIC
-    RXID --> DIC
+    DIC -->|"Embedded in"| CBB
+    CBB -->|"GET /Coverage/{id}"| CLIENT
+    CLIENT --> TRANSFORM
+    TRANSFORM --> RTPBC
     
-    style CBB fill:#e1f5fe
     style DIC fill:#81c784
+    style CBB fill:#e1f5fe
+    style CLIENT fill:#fff9c4
+    style TRANSFORM fill:#fff9c4
     style RTPBC fill:#ffb74d
-    style RXBIN fill:#fff9c4
-    style RXPCN fill:#fff9c4
-    style RXGROUP fill:#fff9c4
-    style RXID fill:#fff9c4
 ```
 
-This implementation demonstrates how extending the CARIN Blue Button API with CARIN Digital Insurance Card pharmacy identifiers enables Real-Time Pharmacy Benefit Check workflows, helping **patients** get real-time benefits information about their prescriptions.
+This implementation demonstrates how CARIN DIC Coverage Resources are embedded within CARIN Blue Button APIs, then retrieved and used to enable Real-Time Pharmacy Benefit Check workflows, helping **patients** get real-time benefits information about their prescriptions.
 
 ## 🎯 The Interoperability Challenge
 
