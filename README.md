@@ -1,29 +1,30 @@
-# RTPBC Reference Implementation Demo
+# CARIN RTPBC + BB + DIC Prototype
 
 A demonstration of how to bridge CARIN Digital Insurance Card (DIC) Coverage resources with Real-Time Pharmacy Benefit Check (RTPBC) requirements, enabling real-world adoption of pharmacy benefit checking at the point of prescribing.
 
 ## 🔗 Coverage Resource Relationships
 
 ```mermaid
-graph LR
+graph TB
     subgraph "Health Plan"
-        DIC["CARIN DIC<br/>Coverage Resource<br/>with Pharmacy IDs<br/>RxBIN, RxPCN<br/>RxGroup, RxID"]
-    end
-    
-    subgraph "CARIN Blue Button API"
-        CBB["Coverage Endpoint<br/>/Coverage/{id}<br/><br/>Returns DIC-profiled<br/>Coverage Resource"]
-    end
-    
-    subgraph "Client Application"
-        CLIENT["1. Retrieve Coverage<br/>from CARIN BB API"]
-        TRANSFORM["2. Extract Pharmacy IDs<br/>from DIC Coverage"]
-        RTPBC["3. Use with RTPBC<br/>for benefit checks"]
+        DIC["CARIN DIC Coverage<br/>Resource includes<br/>RxBIN RxPCN<br/>RxGroup RxID"]
     end
     
     DIC -->|"Embedded in"| CBB
-    CBB -->|"GET /Coverage/{id}"| CLIENT
-    CLIENT --> TRANSFORM
-    TRANSFORM --> RTPBC
+    
+    subgraph "CARIN Blue Button API"
+        CBB["Coverage Endpoint<br/>/Coverage/{id}<br/>Returns DIC-profiled<br/>Coverage Resource"]
+    end
+    
+    CBB -->|"GET request"| CLIENT
+    
+    subgraph "Client Application"
+        CLIENT["Retrieve Coverage<br/>from CARIN BB API"]
+        CLIENT --> TRANSFORM
+        TRANSFORM["Extract Pharmacy IDs<br/>from DIC Coverage"]
+        TRANSFORM --> RTPBC
+        RTPBC["Use with RTPBC<br/>for benefit checks"]
+    end
     
     style DIC fill:#81c784
     style CBB fill:#e1f5fe
@@ -34,9 +35,37 @@ graph LR
 
 This implementation demonstrates how CARIN DIC Coverage Resources are embedded within CARIN Blue Button APIs, then retrieved and used to enable Real-Time Pharmacy Benefit Check workflows, helping **patients** get real-time benefits information about their prescriptions.
 
+### Why RTPBC + CARIN BB Patient Access API = Perfect Match
+
+Implementing RTPBC in the context of a CARIN Blue Button Patient Access API creates a powerful synergy that solves multiple challenges simultaneously:
+
+**1. Authentication is Already Solved**
+- CARIN BB APIs require OAuth 2.0 patient authentication
+- Patients have already consented and authenticated to access their data
+- The same authenticated session can be used for RTPBC requests
+- No need for separate authentication workflows or credentials
+
+**2. Patient-Centered Architecture**
+- Both APIs are designed for patient empowerment
+- Patients control access to their own benefit information
+- Aligns with CMS interoperability rules requiring patient access
+- Supports patient choice and transparency in healthcare costs
+
+**3. Single Integration Point**
+- Developers integrate once with the payer's CARIN BB API
+- Same API provides claims history AND real-time benefit checks
+- Reduces implementation complexity and maintenance burden
+- Leverages existing SMART on FHIR infrastructure
+
+**4. Trust and Security**
+- Patient has established trust relationship with their health plan
+- OAuth flow ensures only authorized applications access data
+- Audit trails show patient-initiated benefit checks
+- Reduces risk of unauthorized pharmacy benefit inquiries
+
 ## 🎯 The Interoperability Challenge
 
-This reference implementation addresses a critical gap preventing widespread adoption of real-time pharmacy benefit checking in the United States healthcare system.
+This prototype addresses a critical gap preventing widespread adoption of real-time pharmacy benefit checking in the United States healthcare system.
 
 ## 📋 Problem Statement
 
